@@ -8,6 +8,7 @@ class ODriveArduino {
 public:
     ODriveArduino(Stream& serial);
     void SetPosition(int motor_number, float position);
+    float getBusVoltage();
 private:
     Stream& serial_;
 };
