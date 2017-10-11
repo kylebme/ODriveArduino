@@ -2,6 +2,9 @@
 #include <SoftwareSerial.h>
 #include <ODriveArduino.h>
 
+// Print with stream operator
+template<class T> inline Print &operator <<(Print &obj, T arg) { obj.print(arg); return obj; } 
+
 SoftwareSerial odrive_serial(8, 9); //RX (ODrive TX), TX (ODrive RX)
 ODriveArduino odrive(odrive_serial);
 
@@ -10,14 +13,13 @@ void setup() {
   Serial.begin(115200);
   while (!Serial) ; // wait for Arduino Serial Monitor to open
   Serial.println("ODriveArduino alpha.");
-  Serial.println("Send the character 's' to exectue test move.");
+  Serial.println("Send the character 's' to exectue test move, 'b' to get bus voltage");
 }
 
 void loop() {
-  char c;
 
   if (Serial.available()) {
-    c = Serial.read();
+    char c = Serial.read();
     if (c == 's') {
       for (float ph = 0.0f; ph < 6.28318530718f; ph += 0.01f) {
         float pos_m0 = 20000.0f * cos(ph);
@@ -27,5 +29,10 @@ void loop() {
         delay(5);
       }
     }
+
+    if (c == 'b') {
+      Serial << "Vbus voltage: " << odrive.getBusVoltage() << '\n';
+    }
   }
+
 }
